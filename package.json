@@ -1,11 +1,37 @@
 {
-  "name": "key-mixer",
+  "name": "@samrahimi/key-mixer",
   "version": "0.1.0",
-  "description": "JSON keystore with anti-rate-limit upstream load balancing. In other words, sign up for 5 free trials of your favorite API servic using 5 different emails, add your 5 keys to the keystore, and the key mixer will faithfully rotate the keys as they are requested. Most importantly, it is essentially no work at all to use this vs using normal environment variables. BEFORE:",
-  "main": "index.js",
+  "description": "A Node.js module for managing and distributing API keys from a JSON keystore",
+  "main": "keyMixer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "api",
+    "key",
+    "api keys",
+    "free trial keys",
+    "resource consolidation",
+    "load balancing",
+    "api management",
+    "ai orchestration",
+    "management",
+    "keystore",
+    "round-robin"
+  ],
+  "author": "Sam Rahimi <samrahimi420@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samrahimi/key-mixer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/samrahimi/key-mixer/issues"
+  },
+  "homepage": "https://github.com/samrahimi/key-mixer#readme",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
 }
