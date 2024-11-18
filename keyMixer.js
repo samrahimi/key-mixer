@@ -5,22 +5,32 @@ class KeyMixer {
   constructor() {
     this.keystore = {};
     this.counters = {};
-    this.keystorePath = process.env.KEYSTORE_PATH;
     this.loadKeystore();
   }
 
-  loadKeystore() {
-    if (!this.keystorePath) {
-      throw new Error('KEYSTORE_PATH environment variable is not set');
+  loadKeystore(customPath = null) {
+    if (customPath) {
+      this.keystorePath = customPath;
+    } else {
+      this.keystorePath = process.env.KEYSTORE_PATH || path.resolve(process.cwd(), 'keystore.json');    
     }
 
-    try {
-      const data = fs.readFileSync(path.resolve(this.keystorePath), 'utf8');
-      this.keystore = JSON.parse(data);
-      this.resetCounters();
-    } catch (error) {
-      throw new Error(`Failed to load keystore: ${error.message}`);
+
+    if (!fs.existsSync(this.keystorePath)) {
+      console.warn(`Keystore not found: ${this.keystorePath}, using new keystore. You can add keys by calling addKey, or load an existing keystore by setting environment variable KEYSTORE_PATH to the path of the keystore file.`);
+      this.keystore={};
+    } else {
+      try {
+        const data = fs.readFileSync(path.resolve(this.keystorePath), 'utf8');
+        this.keystore = JSON.parse(data);
+        console.info(`Keystore loaded from: ${this.keystorePath}`);
+
+      } catch (error) {
+        throw new Error(`Failed to load keystore: ${error.message}`);
+      }
     }
+    this.resetCounters();
+
   }
 
   resetCounters() {
@@ -52,7 +62,6 @@ class KeyMixer {
     }
     if (!this.keystore[service].includes(key)) {
       this.keystore[service].push(key);
-      this.counters[service] = 0; // Reset counter for the service
     }
   }
 
