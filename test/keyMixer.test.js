@@ -27,6 +27,18 @@ KeyMixer.addKey('TEST_SERVICE', 'test-key-3');
 assert.strictEqual(KeyMixer.getKey('TEST_SERVICE'), 'test-key-2', 'Next key should be "test-key-2"');
 assert.strictEqual(KeyMixer.getKey('TEST_SERVICE'), 'test-key-3', 'Next key should be "test-key-3"');
 
+// Test singleton behavior
+const KeyMixer1 = require('../keyMixer');
+const KeyMixer2 = require('../keyMixer');
+
+assert.strictEqual(KeyMixer1, KeyMixer2, 'KeyMixer instances should be the same');
+
+// Modify state using KeyMixer1
+KeyMixer1.addKey('SERVICE_2', 'singleton-test-key');
+
+assert.strictEqual(KeyMixer1, KeyMixer2, 'KeyMixer instances should be the same');
+assert.equal(KeyMixer1.getKey('SERVICE_2'), 'singleton-test-key', 'KeyMixer2 should have the updated state');
+
 // Test revokeKey method
 KeyMixer.revokeKey('TEST_SERVICE', 'test-key-2');
 assert.strictEqual(KeyMixer.getKey('TEST_SERVICE'), 'test-key-1', 'Next key should be "test-key-1"');
