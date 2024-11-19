@@ -2,13 +2,19 @@
 
 ## User Guide
 
+Installation: 
+```sh
+npm install @samrahimi/key-mixer
+```
+
+
 
 ### Basic Usage
 
 First, require the Key Mixer module in your project:
 
 ```javascript
-const keyMixer = require('key-mixer');
+const keyMixer = require('@samrahimi/key-mixer');
 ```
 
 ### Loading the Keystore
