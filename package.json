@@ -1,6 +1,6 @@
 {
   "name": "@samrahimi/key-mixer",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "A Node.js module for managing and distributing API keys from a JSON keystore",
   "main": "keyMixer.js",
   "scripts": {
