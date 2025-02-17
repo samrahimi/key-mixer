@@ -1,3 +1,5 @@
+// Test logEvent method
+
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
@@ -12,7 +14,7 @@ const testKeystore = {
 fs.writeFileSync(testKeystorePath, JSON.stringify(testKeystore, null, 2));
 
 // Set the environment variable to use the test keystore
-process.env.KEYSTORE_PATH = testKeystorePath;
+process.env.KEYMIXER_KEYSTORE_PATH = testKeystorePath;
 
 // Reload the KeyMixer to use the test keystore
 KeyMixer.refresh();
@@ -39,6 +41,18 @@ KeyMixer1.addKey('SERVICE_2', 'singleton-test-key');
 assert.strictEqual(KeyMixer1, KeyMixer2, 'KeyMixer instances should be the same');
 assert.equal(KeyMixer1.getKey('SERVICE_2'), 'singleton-test-key', 'KeyMixer2 should have the updated state');
 
+// Check if the environment proxy sync is working
+KeyMixer.addKey('NEW_SERVICE', 'key1')
+KeyMixer.addKey('NEW_SERVICE', 'key2')
+assert.equal(process.env.NEW_SERVICE, 'key1')
+assert.equal(process.env.NEW_SERVICE, 'key2')
+assert.notEqual(process.env.NOT_A_SERVICE, 'key1')
+assert.equal(process.env.NEW_SERVICE, 'key1')
+
+// Check if regular environment variables still work as expected
+process.env.HAMSTER = "gerbil"
+assert.equal(process.env.HAMSTER, "gerbil")
+
 // Test revokeKey method
 KeyMixer.revokeKey('TEST_SERVICE', 'test-key-2');
 assert.strictEqual(KeyMixer.getKey('TEST_SERVICE'), 'test-key-1', 'Next key should be "test-key-1"');
@@ -53,5 +67,19 @@ assert.deepStrictEqual(savedKeystore, KeyMixer.keystore, 'Saved keystore should 
 // Clean up test keystore files
 fs.unlinkSync(testKeystorePath);
 fs.unlinkSync(savePath);
+
+// Test redactKey method
+const testKeys = {
+  'sk-1234567890abcdef': 'sk-123...',
+  'ghp_longtokenhere123': 'ghp_lo...',
+  'abc': '*****',
+  'tiny': '*****'
+};
+
+for (const [input, expected] of Object.entries(testKeys)) {
+  const redacted = KeyMixer.redactKey(input);
+  assert.strictEqual(redacted, expected, `Redaction of ${input} should be ${expected}`);
+}
+
 
 console.log('All tests passed!');
